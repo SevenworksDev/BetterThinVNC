@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <title>BetterThinVNC</title>
+  <script src="jquery/jquery-1.4.2.js"></script>
+  <script src="jquery/jquery-ui.js"></script>
+  <script src="jquery/jquery.ajaxq.js"></script>
+  <script src="js/thinvnc.sdk.js"></script>
+  <script src="js/thinvnc.app.js"></script>
+  <script>
+    $(document).ready(function () {
+      function gup(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.href);
+        if (results == null)
+          return "";
+        else
+          return results[1];
+      }
+
+      $(window).bind("serverDisconnect", function () {
+        window.location.href = "/";
+      });
+
+      $("#connect").click(function () {
+        if (document.getElementById("pnltwitter") != null) {
+          document.getElementById("pnltwitter").innerHTML = "";
+        }
+        if (document.getElementById("pnlfacebook") != null) {
+          document.getElementById("pnlfacebook").innerHTML = "";
+        }
+        connect();
+      });
+
+      $("#computer").keydown(function (event) {
+        if (event.keyCode == "13") {
+          connect();
+        }
+      });
+
+      function connect() {
+        var inputComputer = document.getElementById("computer");
+        var inputFullColor = document.getElementById("fullColor");
+        var inputControlMode = document.getElementById("controlMode");
+        var fullColor = !!inputFullColor.checked;
+        var mouseControl = !!inputControlMode.checked;
+
+        var fcQ = 85;
+        var fcPF = 0;
+        if (!fullColor) {
+          fcQ = 50;
+          fcPF = 1;
+        }
+        if (mythinvnc) delete mythinvnc;
+        try {
+          var mythinvnc = new ThinVNCApp({
+            divId: "desk",
+            scaled: true,
+            mouseControl: inputControlMode.checked,
+            address: inputComputer.value,
+            pixelFormat: fcPF,
+            quality: fcQ
+          });
+          var cb = document.getElementById("connect");
+          cb.disabled = true;
+        } catch (e) {
+          alert(e.message);
+        }
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div id="desk"></div>
+  <div id="connect-page">
+    <div style="text-align: center; width: 400px; margin: 0 auto;">
+      <br>
+      <img height="94" src="images/ThinVnc.png" width="289" alt="">
+      <br><br>
+      <fieldset id="Group1">
+        <br>
+        <hr>
+        <br>
+        <table width="100%" style="text-align: left;">
+          <tr>
+            <td style="width: 111px" class="machine"><span id="machine-t">Machine:</span>&nbsp;&nbsp;</td>
+            <td class="options"><input id="computer" type="text" value="" class="options" style="width: 210px" /></td>
+          </tr>
+          <tr>
+            <td style="width: 111px">&nbsp;</td>
+            <td class "options">&nbsp;</td>
+          </tr>
+          <tr>
+            <td style="width: 111px" align="left">&nbsp;</td>
+            <td class="options"><input id="fullColor" type="checkbox" checked="checked" />&nbsp;<span id="full-color-t">Full Color</span></td>
+          </tr>
+          <tr>
+            <td style="width: 111px" align="left">&nbsp;</td>
+            <td class="options"><input id="controlMode" type="checkbox" checked="checked" />&nbsp;<span id="mouse-control-t">Mouse Control</span></td>
+          </tr>
+          <tr>
+            <td style="width: 111px">&nbsp;</td>
+            <td align="Left">
+              <input id="connect" type="button" value="Connect" class="style1" style="width: 171px; height: 31px" />
+            </td>
+          </tr>
+        </table>
+        <br>
+      </fieldset>
+    </div>
+    <div id="footer">
+      <div class="wrapper">
+        <span class="copyright">
+          Copyright&copy; 2010 <a href="https://www.cybelesoft.com/?utm_source=ThinVNC" title="Cybele Software" target="_blank">Cybele Software, Inc.</a> - Find more <a href="https://www.cybelesoft.com/thinfinity/?utm_source=ThinVNC" title="RDP, Screen Sharing, Virtualization solutions" target="_blank">remote access</a> solutions. | Modified by @SevenworksDev on Github.com
+        </span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
